@@ -37,10 +37,11 @@ function Signup() {
             });
             const result = await response.json();
             const { success, message, error } = result;
+            
             if (success) {
                 handleSuccess(message);
                 setTimeout(() => {
-                    navigate('/login')
+                    navigate('/verify-otp', { state: { email: signupInfo.email } });
                 }, 1000)
             } else if (error) {
                 const details = error?.details[0].message;
