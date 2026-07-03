@@ -1,0 +1,159 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" 
+}
+
+enum Role {
+  SUPER_ADMIN 
+  ADMIN       
+  USER        
+}
+
+enum AdminStatus {
+  PENDING     // Just signed up, awaiting Super Admin approval
+  APPROVED    // Verified by Super Admin, can manage college
+  REJECTED    // Denied by Super Admin
+}
+
+enum QuestionType {
+  FIXED       
+  EDITABLE    
+  CUSTOM      
+}
+
+enum MatchType {
+  SCALE       // 1-5 numerical rating
+  STRICT      // Exact match required 
+}
+
+enum CycleStatus {
+  DRAFT       // Admin is preparing
+  OPEN        // Form is LIVE
+  CLOSED      // Deadline reached, form locked
+  MATCHED     // Engine ran, results generated (hidden)
+  RELEASED    // Admin declared results to students
+}
+
+model College {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  domain    String   @unique       // Required — enforces domain locking for admins
+  createdAt DateTime @default(now())
+
+  users     User[]
+  cycles    MatchingCycle[]
+  questions Question[]
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  isVerified   Boolean      @default(false)
+  otp          String?
+  otpExpiresAt DateTime?
+  role         Role         @default(USER)
+  adminStatus  AdminStatus? // Only relevant for ADMIN role — null for students/super admins
+
+  // Student isolation fields for matching buckets
+  degree       String?      // e.g., "B.Tech", "M.Tech", "PhD", "MBA"
+  passingYear  Int?         // e.g., 2027, 2028
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  collegeId    String?
+  college      College?     @relation(fields: [collegeId], references: [id])
+  
+  submissions  Submission[]
+  matches      MatchResult[] @relation("UserMatches")
+  matchedBy    MatchResult[] @relation("MatchedUser")
+
+  // Chat relations
+  sentMessages     Message[] @relation("Sender")
+  receivedMessages Message[] @relation("Receiver")
+}
+
+model Question {
+  id        String       @id @default(uuid())
+  text      String
+  order     Int
+  type      QuestionType
+  matchType MatchType    @default(SCALE)
+  options   String[]     
+  weight    Float        @default(1.0)
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now()) 
+
+  collegeId String
+  college   College      @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+}
+
+model MatchingCycle {
+  id        String      @id @default(uuid())
+  name      String      
+  endDate   DateTime    
+  status    CycleStatus @default(DRAFT) 
+
+  collegeId String
+  college   College     @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  submissions  Submission[]
+  matchResults MatchResult[]
+}
+
+model Submission {
+  id          String   @id @default(uuid())
+  answers     Json     // Format: [{ "questionId": "uuid", "value": 4 }, { "questionId": "uuid2", "value": "VEG" }]
+  submittedAt DateTime @default(now())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  cycleId     String
+  cycle       MatchingCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cycleId])
+}
+
+model MatchResult {
+  id              String   @id @default(uuid())
+  similarityScore Float   
+  rank            Int      
+  isSuperMatch    Boolean  @default(false) 
+
+  userId          String
+  user            User     @relation("UserMatches", fields: [userId], references: [id], onDelete: Cascade)
+
+  matchedUserId   String
+  matchedUser     User     @relation("MatchedUser", fields: [matchedUserId], references: [id], onDelete: Cascade)
+
+  cycleId         String
+  cycle           MatchingCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, matchedUserId, cycleId])
+}
+
+// Chat persistence model — messages between matched students
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  senderId    String
+  sender      User   @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  receiverId  String
+  receiver    User   @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  cycleId     String   // Scoped to a cycle for security validation
+
+  @@index([senderId, receiverId])
+  @@index([cycleId])
+}

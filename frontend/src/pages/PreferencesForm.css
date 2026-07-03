@@ -1,0 +1,271 @@
+/* src/pages/PreferencesForm.css - Premium Zenix Theme */
+
+.pf-wrapper {
+  min-height: 100vh;
+  background-color: #0b0b10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.pf-card {
+  width: 100%;
+  max-width: 650px;
+  background: #151521;
+  border: 1px solid #2a2a35;
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header */
+.pf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2a2a35;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.pf-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 0;
+  background: linear-gradient(to right, #fff, #a0a0b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pf-step-badge {
+  background: #252536;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #a0a0b0;
+  border: 1px solid #3f3f5a;
+}
+
+/* Step 1: Foundation (Diet) */
+.pf-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+}
+
+.pf-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #a0a0b0;
+  margin-bottom: 0.75rem;
+}
+
+.pf-select {
+  width: 100%;
+  padding: 1.2rem;
+  background: #0b0b10;
+  border: 1px solid #3f3f5a;
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.pf-select:focus {
+  border-color: #6366f1;
+}
+
+/* The Yellow Warning Note */
+.pf-warning {
+  background-color: rgba(229, 197, 107, 0.08);
+  border: 1px solid rgba(229, 197, 107, 0.25);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.pf-warning-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #e5c56b;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.pf-warning p {
+  margin: 0;
+  color: #d1b465;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Step 2+: Sliders */
+.pf-slider-box {
+  background: #0b0b10;
+  padding: 2rem 1.5rem;
+  border-radius: 20px;
+  border: 1px solid #2a2a35;
+  margin-bottom: 1.5rem;
+}
+
+.pf-slider-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.pf-icon {
+  background: #1c1c2a;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 1.3rem;
+  border: 1px solid #3f3f5a;
+}
+
+.pf-slider-title {
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #a0a0b0;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.pf-val-display {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.pf-val-highlight {
+  color: #818cf8;
+  font-weight: 700;
+}
+
+/* Custom Range Input Webkit Magic */
+.pf-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #2a2a35;
+  border-radius: 4px;
+  outline: none;
+  margin: 1rem 0 1.5rem 0;
+}
+
+.pf-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #6366f1;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+  border: 3px solid #ffffff;
+  transition: transform 0.1s ease;
+}
+
+.pf-range::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.pf-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Bottom Navigation Actions */
+.pf-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #2a2a35;
+}
+
+.pf-btn {
+  padding: 0.85rem 1.8rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.pf-btn-back {
+  background: #252536;
+  color: #a0a0b0;
+}
+
+.pf-btn-back:hover:not(:disabled) {
+  background: #2f2f45;
+  color: #ffffff;
+}
+
+.pf-btn-back:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pf-btn-next {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: white;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+}
+
+.pf-btn-next:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+}
+
+.pf-btn-next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Loading State */
+.pf-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.pf-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #2a2a35;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: pf-spin 1s linear infinite;
+}
+@keyframes pf-spin { to { transform: rotate(360deg); } }
