@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from '../src/db.js';
 
+
 async function main() {
   console.log('🌱 Seeding VibeSync database...');
   console.log('⚠️  Clearing all existing data...\n');
@@ -20,22 +21,40 @@ async function main() {
   });
   console.log(`🏫 College: ${iitp.name} (domain: ${iitp.domain})`);
 
-  // ─── 2. CREATE SUPER ADMIN (Platform Owner — not tied to any college) ───
-  const superAdminPassword = await bcrypt.hash('SuperAdmin@2026!', 12);
-  const superAdmin = await prisma.user.create({
+  // ─── 2. CREATE SUPER ADMINS (Platform Owners — not tied to any college) ───
+  const rawSuperAdminPass = process.env.SUPER_ADMIN_PASSWORD || 'superadmin123';
+  const superAdminPassword = await bcrypt.hash(rawSuperAdminPass, 12);
+
+  // Super Admin 1
+  const superAdmin1 = await prisma.user.create({
     data: {
-      email: 'superadmin@vibesync.in',
-      name: 'VibeSync Platform Admin',
+      email: process.env.SUPER_ADMIN_EMAIL_1 || 'superadmin1@vibesync.in',
+      name: 'VibeSync Founder 1',
       passwordHash: superAdminPassword,
       role: 'SUPER_ADMIN',
       isVerified: true,
-      // Super Admin is NOT tied to any college — platform-level
     },
   });
-  console.log(`👑 Super Admin: ${superAdmin.email} (Password: SuperAdmin@2026!)`);
+
+  // Super Admin 2
+  const superAdmin2 = await prisma.user.create({
+    data: {
+      email: process.env.SUPER_ADMIN_EMAIL_2 || 'superadmin2@vibesync.in',
+      name: 'VibeSync Founder 2',
+      passwordHash: superAdminPassword,
+      role: 'SUPER_ADMIN',
+      isVerified: true,
+    },
+  });
+  console.log(`👑 Super Admins Created:`);
+  console.log(`   1. ${superAdmin1.email}`);
+  console.log(`   2. ${superAdmin2.email}`);
+  console.log(`   (Password: Set via .env file)`);
 
   // ─── 3. CREATE COLLEGE ADMIN (Pre-Approved for testing) ───
-  const adminPassword = await bcrypt.hash('Admin@IITPatna2026', 12);
+  const rawAdminPass = process.env.COLLEGE_ADMIN_PASSWORD || 'AdminHUHHHHHHHHHH';
+  const adminPassword = await bcrypt.hash(rawAdminPass, 12);
+  
   const collegeAdmin = await prisma.user.create({
     data: {
       email: 'admin@iitp.ac.in',
@@ -47,9 +66,10 @@ async function main() {
       collegeId: iitp.id,
     },
   });
-  console.log(`🛡️  College Admin: ${collegeAdmin.email} (Password: Admin@IITPatna2026) [APPROVED]`);
+  console.log(`🛡️  College Admin: ${collegeAdmin.email} (Password: Set via .env file) [APPROVED]`);
 
   // ─── 4. CREATE TEST STUDENTS (with degree + passingYear for isolation) ───
+  // Student password can remain hardcoded as it's just dummy test data
   const studentPassword = await bcrypt.hash('student123', 10);
 
   // B.Tech 2027 bucket
@@ -156,10 +176,11 @@ async function main() {
 
   console.log('\n✅ Seed complete! VibeSync is ready.\n');
   console.log('─────────────────────────────────────────────');
-  console.log('  Login Credentials:');
-  console.log('  Super Admin  : superadmin@vibesync.in / SuperAdmin@2026!');
-  console.log('  College Admin: admin@iitp.ac.in / Admin@IITPatna2026');
-  console.log('  Students     : priyank@iitp.ac.in / student123');
+  console.log('  Login Credentials (see .env for admin passwords):');
+  console.log('  Super Admin 1 : ' + (process.env.SUPER_ADMIN_EMAIL_1 || 'superadmin1@vibesync.in'));
+  console.log('  Super Admin 2 : ' + (process.env.SUPER_ADMIN_EMAIL_2 || 'superadmin2@vibesync.in'));
+  console.log('  College Admin : admin@iitp.ac.in');
+  console.log('  Students      : priyank@iitp.ac.in / student123 (and others)');
   console.log('─────────────────────────────────────────────');
 }
 
